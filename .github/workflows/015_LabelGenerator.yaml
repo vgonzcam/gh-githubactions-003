@@ -41,7 +41,7 @@ jobs:
           LABEL: ${{ inputs.label }}
           DESCRIPTION: ${{ inputs.description }}
           COLOR: ${{ inputs.color }}
-          GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
 
         run: |
           gh label create "$LABEL" --description "$DESCRIPTION" --color "$COLOR" --force
