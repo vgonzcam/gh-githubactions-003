@@ -1,0 +1,47 @@
+name: 015_LabelGenerator
+run-name: 015_LabelGenerator
+on:
+  workflow_dispatch:
+    inputs:
+      label:
+        description: "Label"
+        required: true
+        type: string
+      description:
+        description: "Description"
+        required: true
+        type: string
+      color:
+        description: "Color"
+        required: true
+        type: string
+
+# Sets permissions for the entire workflow
+permissions:
+  contents: write
+
+jobs:
+  create-firefighter-user:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          token: ${{ github.token }}
+
+      - name: Label Inputs
+        env:
+          LABEL: ${{ inputs.label }}
+          DESCRIPTION: ${{ inputs.description }}
+          COLOR: ${{ inputs.color }}
+          GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN }}
+
+        run: |
+          gh label create "$LABEL" --description "$DESCRIPTION" --color "$COLOR" --force
