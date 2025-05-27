@@ -1,5 +1,5 @@
-name: 015_LabelGeneratorDev
-run-name: 015_LabelGeneratorDev
+name: 015_LabelGeneratorPro
+run-name: 015_LabelGeneratorPro
 on:
   workflow_dispatch:
     inputs:
