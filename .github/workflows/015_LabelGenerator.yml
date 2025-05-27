@@ -21,8 +21,19 @@ permissions:
   contents: write
 
 jobs:
-  create-firefighter-user:
+  determine_env:
     runs-on: ubuntu-latest
+    steps:
+      - run: echo "Determine env"
+      - id: set_env
+        run: echo "::set-output name=deploy_env::"${{ github.ref_name }}""
+    outputs:
+      deploy_env: ${{ steps.set_env.outputs.deploy_env }}
+
+  create-firefighter-user:
+    needs: determine_env
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine_env.outputs.deploy_env}}
 
     steps:
       - name: Checkout repository
@@ -39,7 +50,7 @@ jobs:
       - name: Label Inputs
         env:
           LABEL: ${{ inputs.label }}
-          DESCRIPTION: ${{ inputs.description }}
+          DESCRIPTION: ${{ vars.ENV_VALUE }}
           COLOR: ${{ inputs.color }}
           GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN_TST }}
 
