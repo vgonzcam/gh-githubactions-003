@@ -1,0 +1,5 @@
+RepositoryName,RepositoryID,EnvironmentName,AdminBypass,WaitTimer,Reviewers,PreventSelfReview,BranchPolicyType,Branches,CustomDeploymentProtectionPolicy,SecretsTotalCount,VariablesTotalCount
+gh-githubactions-003,991143446,dev,true,0,,false,,,,0,1
+gh-githubactions-003,991143446,main,true,0,,false,,,,0,1
+gh-githubactions-003,991143446,pro,true,0,,false,,,,0,1
+gh-githubactions-003,991143446,production,true,0,,false,,,,0,1

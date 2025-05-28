@@ -1,0 +1,54 @@
+name: sh_v4
+run-name: sh_v4
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Action to perform"
+        required: true
+        default: "list"
+        type: choice
+        options:
+          - list-env
+          - list-var
+      organization:
+        description: "Organization name"
+        required: true
+        type: string
+      repository:
+        description: "Repository name (optional for org-wide operations)"
+        required: true
+        type: string
+
+jobs:
+  manage-environments:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install gh-environments extension
+        run: |
+          gh extension install katiem0/gh-environments
+          echo "Extension installed successfully"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: List existing environments
+        if: ${{ inputs.action == 'list-env' }}
+        run: |
+          echo "Listing environments for organization: ${{ inputs.organization }}"
+          gh environments list ${{ inputs.organization }} ${{ inputs.repository }} --output-file verification-report.csv
+
+      - name: Upload reports as artifacts
+        if: ${{ inputs.action == 'list' || inputs.action == 'full-setup' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: environment-reports
+          path: |
+            *.csv
