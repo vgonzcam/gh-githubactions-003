@@ -46,7 +46,8 @@ jobs:
         run: |
           echo "Listing environments for organization: ${{ inputs.organization }}"
           gh environments list ${{ inputs.organization }} ${{ inputs.repository }} --output-file verification-report.csv
-
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Upload reports as artifacts
         if: ${{ inputs.action == 'list' || inputs.action == 'full-setup' }}
         uses: actions/upload-artifact@v4
