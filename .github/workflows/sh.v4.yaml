@@ -49,7 +49,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN_TST }}
       - name: Upload reports as artifacts
-        if: ${{ inputs.action == 'list' || inputs.action == 'full-setup' }}
+        if: ${{ inputs.action == 'list-env' || inputs.action == 'list-env' }}
         uses: actions/upload-artifact@v4
         with:
           name: environment-reports
