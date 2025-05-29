@@ -10,15 +10,21 @@ on:
         default: "list"
         type: choice
         options:
-          - list-env
-          - list-var
+          - list-envs
+          - list-vars
+          - create-envs
+          - create-vars
       organization:
         description: "Organization name"
         required: true
         type: string
       repository:
-        description: "Repository name (optional for org-wide operations)"
-        required: true
+        description: "Repository name (optional for variable creation operations)"
+        required: false
+        type: string
+      filename:
+        description: "FileName (optional for list operations)"
+        required: false
         type: string
 
 jobs:
@@ -32,7 +38,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ github.token }}       
+          token: ${{ github.token }}
 
       - name: Install gh-environments extension
         run: |
@@ -42,14 +48,39 @@ jobs:
           GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN_TST }}
 
       - name: List existing environments
-        if: ${{ inputs.action == 'list-env' }}
+        if: ${{ inputs.action == 'list-envs' }}
         run: |
           echo "Listing environments for organization: ${{ inputs.organization }}"
           gh environments list ${{ inputs.organization }} ${{ inputs.repository }} --output-file verification-report.csv
         env:
           GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN_TST }}
+
+      - name: List existing environments
+        if: ${{ inputs.action == 'list-vars' }}
+        run: |
+          echo "Listing environments for organization: ${{ inputs.organization }}"
+          gh environments variables list ${{ inputs.organization }} ${{ inputs.repository }} --output-file verification-variables-report.csv
+        env:
+          GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN_TST }}
+
+      - name: Create environment
+        if: ${{ inputs.action == 'create-envs' }}
+        run: |
+          echo "Create environments for organization: ${{ inputs.organization }}"
+          gh environments create ${{ inputs.organization }}/${{ inputs.repository }} --from-file .\${{ inputs.filename }}
+        env:
+          GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN_TST }}
+
+      - name: Create environment variables
+        if: ${{ inputs.action == 'create-vars' }}
+        run: |
+          echo "Create environments variables for organization: ${{ inputs.organization }}"
+          gh environments variables create ${{ inputs.organization }} --from-file .\${{ inputs.filename }}
+
+        env:
+          GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN_TST }}
       - name: Upload reports as artifacts
-        if: ${{ inputs.action == 'list-env' || inputs.action == 'list-env' }}
+        if: ${{ inputs.action == 'list-envs' || inputs.action == 'list-vars' }}
         uses: actions/upload-artifact@v4
         with:
           name: environment-reports
