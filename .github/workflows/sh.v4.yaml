@@ -47,6 +47,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN_TST }}
 
+      - name: PWD
+        run: |
+          pwd
+
       - name: List existing environments
         if: ${{ inputs.action == 'list-envs' }}
         run: |
